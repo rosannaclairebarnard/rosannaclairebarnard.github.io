@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>F1 visualised 1950 - 2023</title>
+	<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Sen:wght@400;700;800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="https://unpkg.com/intersection-observer"></script>
+	<script src="https://unpkg.com/scrollama"></script>
+</head>
+<style type="text/css">
+	body, html {
+		top:0;
+		left:0;
+		margin:0;
+		font-family:'Titillium Web', sans-serif;
+	}
+	nav	{
+		background-color:white;
+		position:fixed;
+		width:100%;
+		display:flex;
+		justify-content: center;
+		align-items:center;
+		border-bottom:0.05em solid black;
+		z-index:100;
+	}
+	.title {
+		height:40vh;
+		color:black;
+		background-color:#70D7D0;
+/*		background-image:url('https://i.pinimg.com/originals/7f/43/1c/7f431c9e6991b1a83d79e359dc09c99d.gif');*/
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+		background-position: left top;
+		background-size: auto 100%;
+	}
+	.title h1 {
+		font-size:36pt;
+	}
+	.title h2 {
+		font-size:1em;
+		font-weight:400;
+	}
+	.header {
+		text-align:center;
+		display:flex;
+		justify-content:center;
+		align-items:center;
+		border:0.00em solid black;
+		padding:5% 0%;
+		animation: fadeIn 0.5s ease-in-out;
+	}
+	.header h1{
+		font-family:'Titillium Web', sans-serif;
+		font-weight:800;
+		margin:0;
+	}
+	.header h2 {
+		margin:0;
+	}
+	.sticky {
+		float:right;
+		top:25%;
+		position:sticky;
+		width:40%;
+		display:inline-flex;
+					background-color:white;
+	}
+	.leftside{
+		background-color:black;
+		color:white;
+		width: 40%;
+    	padding: 5% 10% 5% 5%;
+	}
+	.progressive{
+		width:100%;
+		display:block;
+		margin-bottom:100%!important;
+	}
+	.end {
+		margin-bottom:5%!important;
+	}
+	#counter {
+		width:100%;
+		font-size:10em;
+		text-align:center;
+		margin:0;
+		padding:0%;
+		line-height:1em;
+		font-weight: 800;
+    	letter-spacing: -0.05em;
+	}
+	#counter h2{
+		text-align:center;
+	}
+	.text {
+		margin:5%;
+		line-height:2em;
+		opacity:0;
+		margin-top:10%;
+		transition:0.5s ease-in-out;
+	}
+	.text h1 {
+		font-size:4em;
+		letter-spacing:-0.05em;
+		line-height:1em;
+		font-weight:900;
+		width:60%;
+	}
+	.text h2 {
+		font-weight:400;
+		font-size:1em;
+		font-style:italic;
+	}
+	.sticky h1 {
+		width:100%;
+		font-size:3em;
+	}
+	.sticky h2 {
+		font-size:0.8em;
+		text-transform:uppercase;
+		letter-spacing:0.1em;
+	}
+	.center_aligner {
+		overflow:none;
+		width:100%;
+		display:flex;
+		align-items:center;
+		justify-content:center;
+		margin:2% 0%;
+	}
+	iframe {
+		border:0.5em solid black;
+		width:900px;
+		height:500px;
+	}
+	.tableauPlaceholder{
+		width:50%;
+		z-index:0;
+	}
+	img{
+		text-align:center;
+		margin:0%;
+		display:inline-block;
+		border:0.25em solid black;
+	}
+	.caption {
+		font-size:0.8em;
+		color:#666666;
+	}
+	.small {
+		width:25%;
+	}
+	.large {
+		width:80%;
+		display:block;
+	}
+	@keyframes fadeIn {
+		0%{
+			opacity:0;
+		}
+		100%{
+			opacity:1;
+		}
+	}
+	@media screen and (max-width:767px){
+		.sticky {
+	/*		bottom:0;*/
+			width:40%;
+			float:none;
+			margin:auto;
+			display:flex;
+			line-height:2em;
+		}
+		.sticky h1 {
+			font-size:2em;
+			line-height:2em;
+		}
+		.sticky h2 {
+			font-size:0.5em;
+		}
+		#counter {
+			font-size:5em;
+		}
+		.leftside {
+			width: 85%;
+    		padding: 5% 10% 5% 5%;
+		}
+		.small {
+			width:80%;
+		}
+		.title {
+			height:80vh;
+		}
+		.text h1 {
+			font-size:2.5em;
+			width:80%;
+		}
+		.text {
+			margin:10% 5%;
+		}
+		iframe {
+			height:300px;
+		}
+
+	}
+</style>
+<body>
+
+<!-- nav -->
+<nav>
+	<h3>Formula One 1950 - 2023: a formula for success?</h3>
+</nav>
+
+<!-- text -->
+<div class='header title step'>
+	<div class='aligner'>
+		<h1>Formula One 1950 - 2023: a formula for success?</h1>
+		<h2><em>A visual exploration of 74 years of Formula One data</em></h2>
+	</div>
+</div>
+
+<!-- Introductory blurb-->
+<div class='text'>
+	<h2>Rosanna Claire Barnard 14th January 2024</h2>
+	<p>I am currently doing an <a href="https://www.newschool.edu/parsons/infographics-data-visualization-certificate/">Infographics and Data Visualisation certificate</a> at the Parsons School of Design, working on a course called Information Design for Visual Storytelling. As part of this course, and since I am a fan of Formula One myself, I decided to select Formula One (F1) data to explore in a visual storytelling format.</p>
+	<p>F1 is one of the most popular sporting events in the world and is estimated to reach a combined global television audience of 445 million people. F1's popularity has been boosted in recent years, particularly since the release of the <a href="https://en.wikipedia.org/wiki/Formula_1:_Drive_to_Survive">Drive to Survive</a> Netflix series. This story aims to explore key insights from F1 data between 1950 and 2023.</p>
+	<p>All of the data used here is publicly available for download courtesy of <a href="http://ergast.com/mrd">Ergast API</a>. For the R code I used to process the data, please <a href="mailto:rosannaclairebarnard@gmail.com">email me</a> :)</p>
+</div>
+
+<div class='text'>
+<h1>Formula One race timeline</h1>
+The number of races in a Formula One season has increased from 7 in 1950 to 28 in 2023
+</div>
+
+<!-- tableau public viz 1 - area chart showing races each year over time -->
+<div class='center_aligner'>
+	<!-- insert tableau public embed link below this line -->
+	<div class='tableauPlaceholder' id='viz1705264999259' style='position: relative'><noscript><a href='#'><img alt='Total number of races per Formula One season, 1950-2023 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;In&#47;InfoDesignweek8-viz1&#47;Areachart&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='InfoDesignweek8-viz1&#47;Areachart' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;In&#47;InfoDesignweek8-viz1&#47;Areachart&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1705264999259');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+</div>
+
+<div class='text'>
+<h1>Earliest F1 Grand Prix</h1>
+
+<p>The first F1 Grand Prix race was held on 13th May 1950 -- the British Grand Prix.</p>
+
+<p><a href="https://en.wikipedia.org/wiki/Giuseppe_Farina">Nino Farina</a> won this race for Alfa Romeo, and went on to become the first Formula One world champion in 1950.</p>
+</div>
+
+<!-- video of Nino Farina's final lap -->
+<div class='center_aligner'>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_KYvVCa1F00?si=udrfjesRY_xsXCC2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+
+<div class='text'>
+<h1>Latest F1 Grand Prix</h1>
+
+<p>More than 73 years later, the most recent F1 Grand Prix race was held on 26th November 2023 -- the Abu Dhabi Grand Prix.</p>
+
+<p>The 2023 F1 world championship driver <a href="https://en.wikipedia.org/wiki/Max_Verstappen">Max Verstappen</a> won this race for Red Bull Racing, following one of the most dominant F1 seasons of all time.</p>
+</div>
+
+<div class='center_aligner'>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/6DRVny0bbYQ?si=GxQXUoP42529zAEl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+
+<div class='text'>
+<h1>Age of F1 race winning drivers</h1>
+Over the years, the average age of race winning Formula One drivers has slowly decreased over time (see blue trend line below)
+</div>
+
+<!-- tableau public viz 2 - scatter plot showing winning driver's ages over time -->
+<div class='center_aligner'>
+	<!-- insert tableau public embed link below this line -->
+	<div class='tableauPlaceholder' id='viz1705270507939' style='position: relative'><noscript><a href='#'><img alt='Age of F1 race winners over timeEach orange dot represents a single race winner; the blue line shows the trend of average age of winners over time ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;In&#47;InfoDesignweek8-viz2&#47;Winnersageovertime&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='InfoDesignweek8-viz2&#47;Winnersageovertime' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;In&#47;InfoDesignweek8-viz2&#47;Winnersageovertime&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1705270507939');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+</div>
+
+<div class='text'>
+<h1>Formula One driver's trophy cabinet</h1>
+Since 1950, we can look at the five drivers who have amassed the highest number of wins (including Grand Prix and Sprint Races) over time:
+</div>
+
+<!-- tableau public viz 3 - prolific drivers -->
+<div class='center_aligner'>
+	<!-- insert tableau public embed link below this line -->
+	<div class='tableauPlaceholder' id='viz1705348333328' style='position: relative'><noscript><a href='#'><img alt='Five most prolific F1 race winning drivers over time ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;In&#47;InfoDesignweek9-viz1&#47;FINALFINALdriverhalloffame&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='InfoDesignweek9-viz1&#47;FINALFINALdriverhalloffame' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;In&#47;InfoDesignweek9-viz1&#47;FINALFINALdriverhalloffame&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1705348333328');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+</div>
+
+<div class='text'>
+By hovering over the data, we can also see that Max Verstappen has the highest win percentage over his career, out of the top 5 most prolific drivers.
+</div>
+
+
+</body>
+<script type="text/javascript">
+
+// instantiate the scrollama
+const scroller = scrollama();
+const scroller2 = scrollama();
+
+scroller
+  .setup({
+    step: ".text",
+    offset: 0.9,
+  })
+  .onStepEnter(response => {
+    // { element, index, direction }
+    el=response.element;
+    el.style.opacity=1;
+    el.style.marginTop='5%';
+  })
+  .onStepExit(response => {
+    // { element, index, direction }
+    el=response.element;
+  })
+  ;
+ // setup resize event
+window.addEventListener("resize", scroller.resize);
+
+scroller2
+  .setup({
+    step: ".progressive",
+    offset: 0.6,
+  })
+  .onStepEnter(response => {
+    // { element, index, direction }
+    el=response.element;
+    el.style.opacity=1;
+    if(response.index==0 || 1 || 2){
+    	stick('dynamic_sticky1')
+    	response.direction=='down'
+    	if(response.index==0){
+    		count(1,16,1,'TEST','between 1950 and 2023','dynamic_sticky1')
+    	} else if (response.index==1){
+    		count(1,100,25,'TEST2','between 1950 and 2023','dynamic_sticky1')
+    	} else if (response.index==2){
+    		count(1,8,1,'TESTDrivers','between 1950 and 2023','dynamic_sticky1')
+    	}
+    }
+  })
+  .onStepExit(response => {
+    // { element, index, direction }
+    el=response.element;
+    console.log(response.index)
+    if(response.index==3){
+    	unstick('dynamic_sticky1')
+    }
+    el.style.opacity=0;
+  })
+  ;
+ // setup resize event
+window.addEventListener("resize", scroller2.resize);
+
+function count(number1, number2, step, title, label, location_id, prefix='', suffix=''){
+	target = document.querySelector('#'+location_id)
+	console.log(target)
+	let text=number1;
+
+	setInterval(function(){
+		if(text!=number2){
+			num = text+step
+			if(num % 1 == 0){
+				text = num
+			} else {
+				text = parseFloat(num.toFixed(2))
+			}
+			target.innerHTML="<div class='aligner'><h1>"+title+"</h1><div id='counter'>"+prefix+text+suffix+"</div><h2>"+label+"</h2></div>"
+		}
+	}, 30);
+}
+
+function stick(location_id){
+	target = document.querySelector('#'+location_id)
+	target.style.position="sticky"
+}
+
+function unstick(location_id){
+	target = document.querySelector('#'+location_id)
+	target.style.position="relative"
+}
+
+</script>
+
+</html>
